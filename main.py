@@ -11,8 +11,10 @@ def show_grid():
     print("---------")
 
 show_grid() 
+game_running = True
 
-def make_a_move(player):  
+def make_a_move(player): 
+    global game_running
     while True:
        try:
          move_x, move_y = input("Enter the coordinates:").split()       
@@ -31,14 +33,16 @@ def make_a_move(player):
          break     
     input_matrix[move_x-1][move_y-1] = player    
     show_grid()
-    if sum(x.count('_') for x in input_matrix) == 0:
-        print("Draw")
-        return 'Game Over'  
     if check_winner(player) == True:
       print("Player", player, "wins")   
-      return 'Game Over'   
+      game_running = False
+      return
+    if sum(x.count('_') for x in input_matrix) == 0:
+        print("Draw")
+        game_running = False
+        return
     print(player, "turn finished")
-    return 'Game still running'
+    return
   
 def check_winner(name):
     if input_matrix[0].count(name) == 3:        
@@ -59,6 +63,7 @@ def check_winner(name):
         return True
     return False
 
-
-while make_a_move('X') == 'Game still running' or make_a_move('O') == 'Game still running':
-    print("Game running")
+while game_running == True:
+    make_a_move('X')
+    if game_running == True:
+        make_a_move('O')
